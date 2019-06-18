@@ -19,13 +19,17 @@ var draw:G = null;
 export default ({joints})=>{
 
     const canvasRef = React.useRef(null);
-    const [solution, setSolution] = React.useState(0);
+    const [selectedItems, setSelectedItems] = React.useState([]);
     const [results, setResults] = React.useState([]);
     const [step, setStep] = React.useState(null);
     const [bars, setBars] = React.useState([]);
 
     React.useEffect(()=>{
         draw = (new Svg(canvasRef.current).size("100%", "100%")).group();
+
+        draw.parent().on('click', (e)=>{
+            setSelectedItems([]);
+        });
 
         return ()=>{
             draw.remove();
@@ -41,9 +45,18 @@ export default ({joints})=>{
 
     React.useEffect(()=>{
         const j1 = new Joint(draw, {x:200, y:-400}, 100, 100, 2);
-        const j2 = new Joint(draw, {x:600, y:-400}, 150, 200, 4);
+        const j2 = new Joint(draw, {x:600, y:-400}, 150, 150, 2);
 
         const results = findPoints(j1, j2, 400).filter((p)=> p[1].x && p[1].y);
+
+        j1.click((e)=>{
+            e.stopPropagation();
+            if(selectedItems.indexOf(j1) < 0) {
+                setSelectedItems([
+                    j1
+                ]);
+            }
+        })
 
         j1.on('dragstart', ()=>{
             setStep(null);
@@ -55,6 +68,12 @@ export default ({joints})=>{
         });
         
         j2.on('dragend', ()=>{
+            const results = findPoints(j1, j2, 400).filter((p)=> p[1].x && p[1].y);
+            setResults(results);
+            setStep(0);
+        });
+
+        j1.on('dragend', ()=>{
             const results = findPoints(j1, j2, 400).filter((p)=> p[1].x && p[1].y);
             setResults(results);
             setStep(0);

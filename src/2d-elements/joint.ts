@@ -141,12 +141,20 @@ export class Joint extends G {
             });
     }
 
-    get min() {
+    get minX() {
         return this.p.x-this.r1;
     }
     
-    get max() {
+    get maxX() {
         return this.p.x+this.r1;
+    }
+
+    get minY() {
+        return -this.p.y-this.r2;
+    }
+    
+    get maxY() {
+        return -this.p.y+this.r2;
     }
 
     cCenter() {
@@ -156,9 +164,9 @@ export class Joint extends G {
         }
     }
 
-
-    fx(x) {
-        return x;
+    fx(y, sign=1) {
+        const {p, r1, r2, n} = this;
+        return sign*Math.pow((1-Math.pow(y-p.y, n)/Math.pow(r2,n))*Math.pow(r1,n), 1/n)+p.x;
     }
 
     fy(x, sign=1) {

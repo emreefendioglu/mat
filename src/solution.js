@@ -27,9 +27,9 @@ export const findPoints = (joint1, joint2, l)=>{
             x: (x=0)=> p[0],
             y: (x=0)=> -p[1]
         }, {
-            x: (x)=> joint2.fx(x),
+            x: (x)=> x,
             y: (x)=> joint2.fy(x)
-        }, l, { min: joint2.min, max: joint2.max } );
+        }, l, { min: joint2.minX, max: joint2.maxX } );
 
         if(r) {
             return [...result, [
@@ -37,18 +37,21 @@ export const findPoints = (joint1, joint2, l)=>{
                 {x:r, y: -joint2.fy(r)},
                 {s, e, time: performance.now()-start}
             ]];
+
         } else {
+
+            console.log(joint2.maxY, joint2.minY);
             var [r, s, e] = solver({
                 x: (x=0)=> p[0],
                 y: (x=0)=> -p[1]
             }, {
-                x: (x)=> joint2.fy(x),
-                y: (x)=> joint2.fx(x)
-            }, l, { min: joint2.min, max: joint2.max } );
+                x: (x)=> joint2.fx(x),
+                y: (x)=> x
+            }, l, { min: -joint2.maxY, max: -joint2.minY } );
 
             return [...result, [
                 {x: p[0], y: p[1]},
-                {x:joint2.fy(r), y: -r},
+                {x:joint2.fx(r), y: -r},
                 {s, e, time: performance.now()-start}
             ]];
         }
