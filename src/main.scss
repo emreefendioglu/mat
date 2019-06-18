@@ -1,0 +1,13 @@
+body {
+    padding: 0;
+    margin: 30px;
+    background: lightgray;
+}
+
+.workspace {
+    height: calc(100% - 124px);
+
+    .canvas {
+        height: calc(100% - 24px);
+    }
+}
